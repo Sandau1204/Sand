@@ -50,7 +50,8 @@ body {
     transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     
     /* TRẠNG THÁI 1: Ở HOME (Nằm giữa) */
-    width: 300px;
+    display: inline-block;
+    width: auto;
     top: 50%; left: 25%;
     transform: translate(-50%, -50%);
     
