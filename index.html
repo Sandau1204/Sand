@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thắng Anh (Sand) - Portfolio</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-header">
+    <div class="mobile-avatar-container">
+        <div class="mobile-avatar"></div>
+        <div class="mobile-info">
+            <span class="m-name">Uông Sỹ Thắng Anh</span>
+            <span class="m-role">Fullstack Dev</span>
+        </div>
+    </div>
+</div>
+    <canvas id="starfield"></canvas>
+
+    <div class="book" id="book">
+        
+        <div class="global-sidebar" id="globalSidebar">
+            <div class="avatar-container">
+                <div class="avatar"></div>
+                <div class="sidebar-info">
+                    <h4>UÔNG SỸ THẮNG ANH</h4>
+                    <p>Fullstack Developer</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" onclick="scrollToPage('home')">01. Home</button>
+                <button class="nav-btn" onclick="scrollToPage('profile')">02. Profile</button>
+                <button class="nav-btn" onclick="scrollToPage('projects')">03. Projects</button>
+                <button class="nav-btn" onclick="scrollToPage('contact')">04. Contact</button>
+            </nav>
+            
+            <div class="mini-info">
+                <p>&copy; 2025 Sand#1204. All rights reserved.</p>
+            </div>
+        </div>
+
+        <div class="scroll-container" id="mainContainer">
+            
+            <section id="home" class="content-section home-section">
+                <div class="home-text">
+                    <p style="color: var(--primary); letter-spacing: 3px;">HELLO WORLD,</p>
+                    <h1>UÔNG SỸ THẮNG ANH</h1>
+                    <h3 class="typewriter">FULLSTACK DEVELOPER <span style="color:var(--secondary)">|</span> DATA ENGINEER</h3>
+                    <button class="btn-action" onclick="scrollToPage('profile')">explore ></button>
+                </div>
+            </section>
+
+            <section id="profile" class="content-section">
+                <h2>SKILLS</h2>
+                <div class="content-wrapper">
+                    <div class="skill-group">
+                        <p class="skill-title">Frontend</p>
+                        <div class="bar-container"><div class="bar-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div class="skill-group">
+                        <p class="skill-title">Backend</p>
+                        <div class="bar-container"><div class="bar-fill" style="width: 85%"></div></div>
+                    </div>
+                     <div class="skill-group">
+                        <p class="skill-title">Data</p>
+                        <div class="bar-container"><div class="bar-fill" style="width: 80%"></div></div>
+                    </div>
+                    <h3 style="margin-top: 30px; color: var(--primary)">STACK</h3>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">Docker</span> <span class="tag">AWS</span> <span class="tag">Redis</span>
+                    </div>
+                    <p style="margin-top: 20px; opacity: 0.7;">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        <br><br>
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                </div>
+            </section>
+
+            <section id="projects" class="content-section">
+                <h2>PROJECTS</h2>
+                <div class="content-wrapper">
+                    <div class="project-card">
+                        <h3 style="color: var(--primary)">E-Commerce Platform</h3>
+                        <p>Microservices System with Spring Boot & React.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3 style="color: var(--secondary)">Data Pipeline</h3>
+                        <p>Automated ETL with Python & Airflow.</p>
+                    </div>
+                    <div class="project-card">
+                        <h3 style="color: #fff">Finance App</h3>
+                        <p>Mobile Banking Solution using Flutter.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="content-section">
+                <h2>CONTACT</h2>
+                <div class="content-wrapper">
+                    <p>Ready for new projects.</p>
+                    <form style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-width: 500px;">
+                        <input type="text" placeholder="Tên" class="input-field">
+                        <input type="email" placeholder="Email" class="input-field">
+                        <textarea rows="4" placeholder="Tin nhắn" class="input-field"></textarea>
+                        <button class="btn-action">Send Message</button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
