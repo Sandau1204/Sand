@@ -5,8 +5,11 @@
     --dark: #0b0d17;      /* Màu nền vũ trụ */
     --border: rgba(255, 255, 255, 0.1);
     --text: #e0e6ed;
-    --book-width: 1000px;
-    --book-height: 650px;
+    
+    /* Đã tăng kích thước khung sách cho thoáng hơn */
+    --book-width: 1200px;
+    --book-height: 750px;
+    
     --sidebar-width: 260px;
     --transition-speed: 0.6s;
 }
@@ -42,51 +45,56 @@ body {
 .global-sidebar {
     position: absolute;
     z-index: 100;
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Hiệu ứng nảy nhẹ */
+    
+    /* Dùng cubic-bezier mượt mà, không bị nảy */
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     
     /* TRẠNG THÁI 1: Ở HOME (Nằm giữa) */
     width: 300px;
     top: 50%; left: 25%;
     transform: translate(-50%, -50%);
+    
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    width: 100%;
-    transition: all 0.6s ease
+    
+    /* QUAN TRỌNG: Cho phép chuột xuyên qua để cuộn được nội dung bên dưới */
+    pointer-events: none;
 }
 
+/* Kích hoạt lại click cho các phần tử con */
+.global-sidebar .avatar-container,
+.global-sidebar .nav-menu,
+.global-sidebar .mini-info {
+    pointer-events: auto;
+}
 
-/* Ẩn tên đi khi ở trang Home */
-.sidebar-info {
-    opacity: 0;
-    max-width: 0; /* Thu hẹp chiều rộng về 0 */
-    overflow: hidden;
-    white-space: nowrap; /* Không cho chữ rớt dòng */
+/* --- AVATAR CONTAINER (CHỨA ẢNH + TÊN) --- */
+.avatar-container {
+    display: flex;
+    flex-direction: column; /* Mặc định xếp dọc */
+    align-items: center;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+.avatar {
+    width: 140px; height: 140px; border-radius: 50%;
+    border: 3px solid var(--primary);
+    background: url('images/Sand.jpg') center/cover no-repeat;
+    box-shadow: 0 0 30px var(--primary);
+    margin-bottom: 10px; /* Khoảng cách với tên */
     transition: all 0.6s ease;
+    flex-shrink: 0;
+}
+
+/* --- SIDEBAR INFO (TÊN & CHỨC DANH) --- */
+.sidebar-info {
+    opacity: 0; /* Mặc định ẩn ở Home để chờ hiệu ứng chữ bay tới */
+    transform: translateX(20px);
+    transition: all 0.6s ease;
+    transition-delay: 0.2s; /* Hiện trễ một chút */
     text-align: left;
 }
-/* --- TRẠNG THÁI 2: DOCKED (Khi cuộn đi) --- */
 
-/* Chuyển profile thành hàng ngang */
-.book.scrolled .sidebar-profile {
-    flex-direction: row; 
-    margin-bottom: 30px;
-}
-
-/* Thu nhỏ Avatar và bỏ margin dưới */
-.book.scrolled .avatar {
-    width: 65px; 
-    height: 65px; 
-    margin-bottom: 0;
-    box-shadow: 0 0 15px var(--primary);
-}
-
-/* Trượt tên ra bên phải Avatar */
-.book.scrolled .sidebar-info {
-    opacity: 1;
-    max-width: 200px; /* Mở rộng chiều rộng để chữ hiện ra */
-    margin-left: 15px; /* Tạo khoảng cách với avatar */
-}
-
-/* Trang trí cho chữ bên trong Sidebar */
 .sidebar-info h4 {
     font-family: 'Orbitron';
     color: #fff;
@@ -100,46 +108,75 @@ body {
     color: var(--primary);
 }
 
-.avatar {
-    width: 140px; height: 140px; border-radius: 50%;
-    border: 3px solid var(--primary);
-    background: url('images/Sand.jpg') center/cover no-repeat;
-    box-shadow: 0 0 30px var(--primary);
-    margin-bottom: 30px; transition: all 0.5s ease;
-    transition: all 0.6s ease;
-    flex-shrink: 0;
-}
-
-.nav-menu { width: 100%; transition: all 0.5s ease; }
-.mini-info { opacity: 0; transition: opacity 0.5s; margin-top: auto; font-size: 0.8rem; color: var(--secondary); }
-
-/* TRẠNG THÁI 2: DOCKED (Khi cuộn đi) */
+/* --- TRẠNG THÁI 2: DOCKED (KHI CUỘN ĐI) --- */
 .book.scrolled .global-sidebar {
     top: 0; left: 0;
-    transform: none;
+    transform: translate(0, 0);
     width: var(--sidebar-width); height: 100%;
+    
     background: rgba(255, 255, 255, 0.02);
     border-right: 1px solid var(--border);
     align-items: flex-start; /* Căn trái */
     padding: 40px 20px;
+    backdrop-filter: blur(5px);
 }
 
+/* Xoay trục Avatar sang ngang */
+.book.scrolled .avatar-container {
+    flex-direction: row; /* Xếp ngang */
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+/* Thu nhỏ Avatar */
 .book.scrolled .avatar {
-    width: 80px; height: 80px; margin-bottom: 20px;
+    width: 65px; height: 65px;
+    margin-bottom: 0 !important;
+    margin-right: 8px; /* Khoảng cách sát với chữ */
     box-shadow: 0 0 15px var(--primary);
 }
+
+/* Hiển thị và chỉnh sửa chữ bên cạnh */
+.book.scrolled .sidebar-info {
+    opacity: 1;
+    transform: translateX(0);
+    flex: 1;      /* Tự động lấp đầy khoảng trống */
+    min-width: 0; /* Ngăn vỡ layout */
+    display: flex; flex-direction: column; justify-content: center;
+}
+
+.book.scrolled .sidebar-info h4 {
+    font-size: 0.85rem;
+    line-height: 1.2;
+    white-space: normal; /* Cho phép xuống dòng */
+    word-wrap: break-word;
+    margin-bottom: 0;
+}
+
+.book.scrolled .sidebar-info p {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Dấu ... nếu dài quá */
+    margin-top: 0;
+}
+
+/* MENU & NÚT BẤM */
+.nav-menu { width: 100%; transition: all 0.5s ease; }
+.mini-info { opacity: 0; transition: opacity 0.5s; margin-top: auto; font-size: 0.8rem; color: var(--secondary); }
 
 .book.scrolled .nav-menu { align-items: flex-start; }
 .book.scrolled .mini-info { opacity: 1; }
 
-/* Điều chỉnh text nút bấm */
 .nav-btn {
     background: transparent; border: none; color: var(--text);
     font-family: 'Orbitron'; font-size: 1rem; padding: 15px 0;
     cursor: pointer; text-align: center; opacity: 0.6; transition: 0.3s;
     width: 100%; display: block;
 }
-.book.scrolled .nav-btn { text-align: left; } /* Khi dock sang trái thì căn trái chữ */
+.book.scrolled .nav-btn { text-align: left; }
 
 .nav-btn:hover { opacity: 1; color: var(--primary); }
 .nav-btn.active { color: var(--primary); font-weight: bold; opacity: 1; }
@@ -152,36 +189,29 @@ body {
     top: 0; right: 0;
     width: 100%; height: 100%;
     
-    overflow-y: auto;          /* Cho phép cuộn dọc */
-    scroll-behavior: smooth;   /* Cuộn mượt khi lăn chuột */
-    scrollbar-width: none;     /* Ẩn thanh cuộn Firefox */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
     
-    /* Cấu hình cho hiệu ứng Lật trang */
-    transform-origin: left center; /* Xoay quanh trục trái (gáy sách) */
+    transform-origin: left center;
     transform-style: preserve-3d;
     transition: width 0.8s ease, padding-left 0.8s ease, transform 0.5s ease-in, opacity 0.5s ease-in;
 }
 .scroll-container::-webkit-scrollbar { display: none; }
 
-/* Khi Sidebar Dock sang trái, nội dung phải thụt vào */
 .book.scrolled .scroll-container {
     width: 100%;
     padding-left: var(--sidebar-width);
 }
 
-/* --- HIỆU ỨNG LẬT TRANG (FLIP ANIMATION) --- */
-/* Giai đoạn 1: Xoay đi (Biến mất) */
+/* HIỆU ỨNG LẬT TRANG */
 .scroll-container.flipping {
-    transform: rotateY(-90deg); /* Xoay vuông góc */
-    opacity: 0;
-    scroll-behavior: auto !important; /* Tắt cuộn mượt để nhảy trang tức thì */
+    transform: rotateY(-90deg); opacity: 0;
+    scroll-behavior: auto !important;
 }
-
-/* Giai đoạn 2: Xoay về (Hiện ra) */
 .scroll-container.flip-finish {
     animation: flipIn 0.5s ease-out forwards;
 }
-
 @keyframes flipIn {
     from { transform: rotateY(90deg); opacity: 0; }
     to { transform: rotateY(0deg); opacity: 1; }
@@ -198,12 +228,32 @@ body {
 
 /* Trang Home đặc biệt */
 .home-section {
-    padding-left: 50%; /* Chừa chỗ cho Sidebar đang ở giữa */
+    padding-left: 50%;
     transition: padding-left 0.8s ease, opacity 0.5s ease, filter 0.5s ease;
 }
 .book.scrolled .home-section {
-    padding-left: 40px; /* Reset lại khi Sidebar đã bỏ đi */
-    opacity: 0.3; filter: blur(3px); /* Làm mờ Home khi cuộn xuống dưới */
+    padding-left: 40px;
+    opacity: 0.3; filter: blur(3px);
+}
+
+/* --- HIỆU ỨNG CHỮ BAY (MOTION ILLUSION) --- */
+.home-text h1, 
+.home-text h3 {
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-origin: left center;
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+}
+
+/* Khi cuộn: Chữ bay về vị trí Sidebar và biến mất */
+.book.scrolled .home-text h1 {
+    transform: translate(-120px, -140px) scale(0.35); 
+    opacity: 0;
+}
+.book.scrolled .home-text h3 {
+    transform: translate(-120px, -140px) scale(0.35);
+    opacity: 0;
+    transition-delay: 0.1s;
 }
 
 /* --- UI COMPONENTS --- */
@@ -222,247 +272,94 @@ h2 { font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 30px; border-left:
 .input-field { background: rgba(255,255,255,0.1); border: 1px solid var(--border); padding: 10px; color: #fff; width: 100%; border-radius: 5px; outline: none; }
 .tag { border: 1px solid var(--secondary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-right: 5px; color: var(--secondary); display: inline-block; }
 
+
 /* =========================================
-   MOBILE RESPONSIVE (Dành cho điện thoại)
+   MOBILE RESPONSIVE (TỐI ƯU HÓA)
    ========================================= */
+.mobile-header { display: none; } /* Ẩn trên Desktop */
 
 @media (max-width: 768px) {
 
-    /* 1. Thay đổi khung sách thành tràn màn hình */
-    :root {
-        --book-width: 100%;
-        --book-height: 100%;
-    }
+    /* 1. RESET KHUNG SÁCH (Full màn hình) */
+    :root { --book-width: 100%; --book-height: 100%; }
 
     body {
-        align-items: flex-start; /* Căn lên trên cùng */
+        align-items: flex-start;
         background: var(--dark);
+        overflow: auto;
     }
 
     .book {
-        width: 100%;
-        height: 100vh; /* Chiều cao full màn hình */
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-        background: rgba(13, 15, 25, 0.9); /* Nền tối hơn trên mobile */
+        width: 100%; height: auto; min-height: 100vh;
+        background: transparent !important;
+        border: none; border-radius: 0; box-shadow: none;
     }
 
-    /* 2. Biến Sidebar thành Bottom Navigation Bar */
-    /* Ghi đè lên cả trạng thái thường và trạng thái .scrolled */
-    .global-sidebar, 
-    .book.scrolled .global-sidebar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        top: auto; /* Hủy bỏ top */
-        width: 100%;
-        height: 70px; /* Chiều cao thanh điều hướng */
-        transform: none;
-        
-        display: flex;
-        flex-direction: row; /* Xếp ngang */
-        justify-content: space-around;
-        align-items: center;
-        
-        background: rgba(11, 13, 23, 0.95);
-        backdrop-filter: blur(20px);
-        border-right: none;
-        border-top: 1px solid var(--primary); /* Viền sáng ở trên */
-        padding: 0;
-        box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Ẩn Avatar và Info phụ trên mobile cho đỡ chật */
-    .avatar, 
-    .book.scrolled .avatar,
-    .mini-info,
-    .book.scrolled .mini-info {
-        display: none; 
-    }
-
-    /* 3. Chỉnh sửa Menu Buttons */
-    .nav-menu,
-    .book.scrolled .nav-menu {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        height: 100%;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 10px;
-    }
-
-    .nav-btn,
-    .book.scrolled .nav-btn {
-        font-size: 0.75rem; /* Chữ nhỏ lại */
-        text-align: center;
-        padding: 10px 5px;
-        margin: 0;
-        opacity: 0.6;
-        border: none !important; /* Bỏ viền trái active của desktop */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* Hiệu ứng Active trên mobile: Sáng lên và có chấm tròn */
-    .nav-btn.active,
-    .book.scrolled .nav-btn.active {
-        opacity: 1;
-        color: var(--primary);
-        font-weight: bold;
-        background: radial-gradient(circle, rgba(0,243,255,0.2) 0%, transparent 70%);
-        padding-left: 5px; /* Reset padding */
-    }
-
-    /* 4. Điều chỉnh nội dung chính */
-    .scroll-container,
-    .book.scrolled .scroll-container {
-        width: 100%;
-        padding-left: 0; /* Không cần chừa chỗ cho sidebar trái nữa */
-        padding-bottom: 80px; /* Chừa chỗ cho Bottom Bar để không bị che nội dung cuối */
-    }
-
-    .main-content {
-        padding: 20px; /* Giảm padding */
-    }
-
-    .content-section {
-        padding: 80px 20px 40px 20px; /* Tăng padding top để không dính sát mép */
-        min-height: auto; /* Cho phép chiều cao tự do */
-        margin-bottom: 30px;
-    }
-
-    /* Trang Home */
-    .home-section, 
-    .book.scrolled .home-section {
-        padding-left: 20px;
-        text-align: center;
-        min-height: 90vh; /* Home vẫn cao gần full màn hình */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .home-text {
-        width: 100%;
-    }
-
-    /* Typography Mobile */
-    h1 { font-size: 1.8rem; }
-    h2 { font-size: 1.5rem; }
-    h3 { font-size: 0.9rem; }
-    
-    .project-card {
-        margin-bottom: 10px;
-    }
-}
-/* =========================================
-   MOBILE RESPONSIVE UPDATE (Avatar Sticky)
-   ========================================= */
-
-/* Mặc định ẩn Header Mobile trên Desktop */
-.mobile-header {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    
-    /* 1. HIỂN THỊ HEADER CỐ ĐỊNH */
+    /* 2. HEADER CỐ ĐỊNH Ở TRÊN (Thay cho Sidebar Info) */
     .mobile-header {
-        display: flex;
-        position: fixed; /* Luôn dính ở góc trên */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        z-index: 500; /* Nằm trên tất cả nội dung */
-        
-        align-items: center;
-        padding: 0 20px;
-        
-        /* Hiệu ứng kính mờ để nội dung trôi qua bên dưới đẹp mắt */
-        background: rgba(11, 13, 23, 0.85);
+        display: flex !important;
+        position: fixed; top: 0; left: 0;
+        width: 100%; height: 70px;
+        z-index: 999;
+        background: rgba(11, 13, 23, 0.9);
         backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        align-items: center; padding: 0 20px;
+        pointer-events: none; /* Cho phép chạm xuyên qua vùng trống */
     }
-
     .mobile-avatar-container {
-        display: flex;
-        align-items: center;
-        gap: 15px;
+        display: flex; align-items: center; gap: 15px;
+        pointer-events: auto;
     }
-
-    /* 2. STYLE CHO AVATAR */
     .mobile-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        /* Thay link ảnh của bạn vào đây */
+        width: 45px; height: 45px; border-radius: 50%;
         background: url('images/Sand.jpg') center/cover no-repeat;
         border: 2px solid var(--primary);
-        box-shadow: 0 0 10px var(--primary);
-        animation: pulseMobile 3s infinite;
+    }
+    .mobile-info { display: flex; flex-direction: column; }
+    .m-name { font-family: 'Orbitron'; font-size: 0.9rem; color: #fff; }
+    .m-role { font-size: 0.7rem; color: var(--primary); }
+
+    /* 3. THANH ĐIỀU HƯỚNG DƯỚI ĐÁY (Bottom Bar) */
+    .global-sidebar, .book.scrolled .global-sidebar {
+        position: fixed; bottom: 0; left: 0; top: auto;
+        width: 100%; height: 60px;
+        transform: none !important;
+        background: rgba(11, 13, 23, 0.95);
+        border-right: none; border-top: 1px solid rgba(255,255,255,0.1);
+        display: flex; flex-direction: row;
+        align-items: center; justify-content: center;
+        padding: 0; z-index: 999;
     }
 
-    /* 3. STYLE CHO TÊN & CHỨC VỤ */
-    .mobile-info {
-        display: flex;
-        flex-direction: column;
-    }
+    /* Ẩn các thành phần thừa trong Bottom Bar */
+    .global-sidebar .avatar-container, .book.scrolled .avatar-container,
+    .global-sidebar .sidebar-info, .book.scrolled .sidebar-info,
+    .mini-info { display: none !important; }
 
-    .m-name {
-        font-family: 'Orbitron';
-        font-weight: bold;
-        font-size: 0.9rem;
-        color: #fff;
-    }
+    /* Menu ngang */
+    .nav-menu { flex-direction: row !important; width: 100%; justify-content: space-around; padding: 0; }
+    .nav-btn { font-size: 0.7rem; padding: 10px; border: none !important; text-align: center; }
 
-    .m-role {
-        font-size: 0.7rem;
-        color: var(--primary);
-        letter-spacing: 1px;
-    }
-
-    /* 4. ĐIỀU CHỈNH LẠI NỘI DUNG TRANG (Để không bị Header che mất) */
-    .book {
-        /* Bỏ background của book trên mobile để nhìn xuyên thấu starfield đẹp hơn */
-        background: transparent !important; 
-        border: none;
-    }
-
-    .scroll-container {
-        /* Thêm padding-top để nội dung đầu tiên không bị Header che */
-        padding-top: 80px !important; 
-        padding-bottom: 80px !important; /* Chừa chỗ cho menu dưới */
-    }
-
-    /* Home section căn giữa lại */
-    .home-section {
-        min-height: 80vh; /* Giảm chiều cao chút */
-        padding-top: 20px;
-        align-items: center; /* Căn giữa dọc */
-        display: flex;
-    }
-    
-    .home-text {
+    /* 4. TẮT HIỆU ỨNG "CHỮ BAY" (Để không lỗi trên Mobile) */
+    .book.scrolled .home-text h1, .book.scrolled .home-text h3 {
+        transform: none !important;
+        opacity: 1 !important;
         text-align: center;
-        padding: 0 20px;
     }
-    
-    /* Ẩn các avatar cũ nếu còn sót */
-    .global-sidebar {
-        z-index: 499; /* Thấp hơn header một chút */
-    }
-    .global-sidebar .avatar { display: none !important; }
 
-    /* Hiệu ứng thở nhẹ cho Avatar */
-    @keyframes pulseMobile {
-        0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.7); }
-        70% { box-shadow: 0 0 0 5px rgba(0, 243, 255, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
+    /* 5. CĂN CHỈNH NỘI DUNG CHÍNH */
+    .scroll-container, .book.scrolled .scroll-container {
+        padding: 80px 20px 80px 20px !important;
+        width: 100%;
     }
+    .home-section {
+        padding-left: 0 !important;
+        min-height: 80vh;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .home-text { text-align: center; width: 100%; }
+    
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
 }
