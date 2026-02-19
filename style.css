@@ -263,13 +263,21 @@ h2 { font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 30px; border-left:
 
     /* 4. TRANG HOME MOBILE (Full màn hình, chuẩn bị cho hiệu ứng bay chữ) */
     .home-section {
-        padding-left: center !important;
-        min-height: 100vh; /* Full màn hình để không bị trôi */
-        display: flex; align-items: center; justify-content: center;
+        padding: 80px 20px !important; 
+        min-height: 100vh; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
     }
+
     .home-text { 
-        text-align: center; width: 100%;
-        will-change: opacity, transform; /* Tối ưu hiệu năng */
+        text-align: center; 
+        width: 100%;
+        will-change: opacity, transform; 
+    }
+
+    .home-text h1, .home-text h3, .home-text p {
+        transform-origin: center center !important;
     }
     /* Tắt hiệu ứng của PC */
     .book.scrolled .home-text h1, .book.scrolled .home-text h3 {
