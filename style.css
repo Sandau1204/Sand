@@ -263,7 +263,7 @@ h2 { font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 30px; border-left:
 
     /* 4. TRANG HOME MOBILE (Full màn hình, chuẩn bị cho hiệu ứng bay chữ) */
     .home-section {
-        padding-left: 0 !important;
+        padding-left: center !important;
         min-height: 100vh; /* Full màn hình để không bị trôi */
         display: flex; align-items: center; justify-content: center;
     }
