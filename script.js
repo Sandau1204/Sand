@@ -3,7 +3,7 @@ const scrollContainer = document.getElementById('mainContainer');
 const navBtns = document.querySelectorAll('.nav-btn');
 const sections = document.querySelectorAll('.content-section');
 
-// --- HÀM 1: CHUYỂN TRANG BẰNG NÚT BẤM (GIỮ NGUYÊN) ---
+// --- HÀM 1: CHUYỂN TRANG BẰNG NÚT BẤM (DÀNH CHO PC) ---
 function scrollToPage(sectionId) {
     const targetSection = document.getElementById(sectionId);
     if (!targetSection) return;
@@ -12,7 +12,6 @@ function scrollToPage(sectionId) {
     scrollContainer.classList.add('flipping');
 
     setTimeout(() => {
-        // Nhảy đến section đích
         targetSection.scrollIntoView({ behavior: 'auto', block: 'start' });
 
         // Cập nhật Sidebar thủ công
@@ -22,10 +21,8 @@ function scrollToPage(sectionId) {
             book.classList.add('scrolled');
         }
         
-        // Cập nhật Highlight nút
         updateActiveNav(sectionId);
 
-        // Kích hoạt hiệu ứng "Lật về"
         scrollContainer.classList.remove('flipping');
         scrollContainer.classList.add('flip-finish');
 
@@ -36,7 +33,6 @@ function scrollToPage(sectionId) {
     }, 500); 
 }
 
-// Hàm cập nhật highlight menu
 function updateActiveNav(currentId) {
     navBtns.forEach(btn => {
         btn.classList.remove('active');
@@ -46,30 +42,58 @@ function updateActiveNav(currentId) {
     });
 }
 
-// --- HÀM 2: LẮNG NGHE SỰ KIỆN CUỘN CHUỘT (GIỮ NGUYÊN) ---
+// --- HÀM 2: LẮNG NGHE SỰ KIỆN CUỘN CHUỘT ---
 scrollContainer.addEventListener('scroll', () => {
-    if (scrollContainer.classList.contains('flipping') || scrollContainer.classList.contains('flip-finish')) {
-        return;
-    }
-
-    const scrollTop = scrollContainer.scrollTop;
     
-    // Logic Sidebar Docking
-    if (scrollTop > 50) {
-        book.classList.add('scrolled');
-    } else {
-        book.classList.remove('scrolled');
-    }
-
-    // Logic Active Menu
-    let currentId = 'home';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (scrollTop >= sectionTop - 250) {
-            currentId = section.getAttribute('id');
+    // A. LOGIC CHO DESKTOP (SIDEBAR DOCKING)
+    if (window.innerWidth > 768) {
+        if (scrollContainer.classList.contains('flipping') || scrollContainer.classList.contains('flip-finish')) {
+            return;
         }
-    });
-    updateActiveNav(currentId);
+
+        const scrollTop = scrollContainer.scrollTop;
+        if (scrollTop > 50) {
+            book.classList.add('scrolled');
+        } else {
+            book.classList.remove('scrolled');
+        }
+
+        let currentId = 'home';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollTop >= sectionTop - 250) {
+                currentId = section.getAttribute('id');
+            }
+        });
+        updateActiveNav(currentId);
+    } 
+    
+    // B. LOGIC CHO MOBILE (HEADER MORPHING)
+    else {
+        const scrollTop = scrollContainer.scrollTop;
+        const mHeader = document.querySelector('.mobile-header');
+        const mHomeText = document.querySelector('.home-text');
+        
+        // 1. Hiệu ứng chữ Home bay lên và mờ dần
+        const fadePoint = 300; // Khoảng cách pixel để hoàn tất hiệu ứng mờ
+        let opacity = 1 - (scrollTop / fadePoint);
+        let translateY = scrollTop * 0.5; // Tốc độ bay
+
+        if (opacity < 0) opacity = 0;
+        
+        if (mHomeText) {
+            mHomeText.style.opacity = opacity;
+            // Dịch chuyển lên trên và thu nhỏ nhẹ
+            mHomeText.style.transform = `translateY(-${translateY}px) scale(${0.9 + (opacity * 0.1)})`;
+        }
+
+        // 2. Hiệu ứng hiện Header
+        if (scrollTop > 200) { 
+            mHeader.classList.add('active');
+        } else {
+            mHeader.classList.remove('active');
+        }
+    }
 });
 
 
@@ -78,32 +102,28 @@ const canvas = document.getElementById('starfield');
 const ctx = canvas.getContext('2d');
 let width, height;
 
-// Cấu hình Plexus
 const config = {
-    particleCount: 100,      // Số lượng hạt (giảm nếu lag)
-    connectionDistance: 150, // Khoảng cách tối đa để nối dây
-    mouseDistance: 200,      // Khoảng cách tương tác chuột
-    speed: 0.5,              // Tốc độ bay của hạt
-    color: '0, 243, 255'     // Màu Cyan (R, G, B)
+    particleCount: 100,
+    connectionDistance: 150,
+    mouseDistance: 200,
+    speed: 0.5,
+    color: '0, 243, 255'
 };
 
 let particles = [];
 
-// Class Hạt (Particle)
 class Particle {
     constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * config.speed; // Vận tốc X
-        this.vy = (Math.random() - 0.5) * config.speed; // Vận tốc Y
+        this.vx = (Math.random() - 0.5) * config.speed;
+        this.vy = (Math.random() - 0.5) * config.speed;
         this.size = Math.random() * 2;
     }
 
     update() {
         this.x += this.vx;
         this.y += this.vy;
-
-        // Chạm cạnh màn hình thì bật lại
         if (this.x < 0 || this.x > width) this.vx *= -1;
         if (this.y < 0 || this.y > height) this.vy *= -1;
     }
@@ -111,7 +131,7 @@ class Particle {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${config.color}, 0.8)`; // Màu hạt
+        ctx.fillStyle = `rgba(${config.color}, 0.8)`;
         ctx.fill();
     }
 }
@@ -122,9 +142,7 @@ function initPlexus() {
     canvas.width = width;
     canvas.height = height;
     
-    // Tạo lại mảng hạt
     particles = [];
-    // Tự động điều chỉnh số lượng hạt theo kích thước màn hình
     const count = width < 768 ? 50 : config.particleCount;
     
     for (let i = 0; i < count; i++) {
@@ -134,30 +152,20 @@ function initPlexus() {
 
 function animatePlexus() {
     ctx.clearRect(0, 0, width, height);
-    
-    // Vẽ nền tối mờ (để tạo chiều sâu nếu muốn, ở đây ta xóa sạch để trong suốt)
-    // ctx.fillStyle = 'rgba(11, 13, 23, 1)';
-    // ctx.fillRect(0,0,width,height);
-
-    // Vòng lặp cập nhật và vẽ
     for (let i = 0; i < particles.length; i++) {
         let p1 = particles[i];
         p1.update();
         p1.draw();
 
-        // Kiểm tra kết nối với các hạt khác
         for (let j = i; j < particles.length; j++) {
             let p2 = particles[j];
-            
-            // Tính khoảng cách (Pythagoras)
             let dx = p1.x - p2.x;
             let dy = p1.y - p2.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
 
-            // Nếu đủ gần thì vẽ đường nối
             if (distance < config.connectionDistance) {
                 ctx.beginPath();
-                ctx.strokeStyle = `rgba(${config.color}, ${1 - distance/config.connectionDistance})`; // Độ mờ theo khoảng cách
+                ctx.strokeStyle = `rgba(${config.color}, ${1 - distance/config.connectionDistance})`;
                 ctx.lineWidth = 0.5;
                 ctx.moveTo(p1.x, p1.y);
                 ctx.lineTo(p2.x, p2.y);
@@ -168,7 +176,6 @@ function animatePlexus() {
     requestAnimationFrame(animatePlexus);
 }
 
-// Khởi chạy
 window.addEventListener('resize', initPlexus);
 initPlexus();
 animatePlexus();
